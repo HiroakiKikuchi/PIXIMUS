@@ -5,13 +5,13 @@ ORGX= 1195.0 ORGY= 1180.0  ! check these values with adxv !
 DETECTOR_DISTANCE= 100.000                    
 OSCILLATION_RANGE= 0.900                    
 X-RAY_WAVELENGTH= 1.00000                      
-NAME_TEMPLATE_OF_DATA_FRAMES=./Lysozyme_3hz_osc_000???.img
+NAME_TEMPLATE_OF_DATA_FRAMES=/path/to/dataset/data000???.img
 ! REFERENCE_DATA_SET=xxx/XDS_ASCII.HKL ! e.g. to ensure consistent indexing  
 
 
 ! ******************** Parameter tmplate for PIXIMUS ********************
-DATA_RANGE=1 200                                                     
-SPOT_RANGE=1 100                                                     
+DATA_RANGE=1 180                                                     
+SPOT_RANGE=1 90                                                     
 BACKGROUND_RANGE=1 10
 SPACE_GROUP_NUMBER=19
 UNIT_CELL_CONSTANTS= 49.4 60.1 30.1 90 90 90
