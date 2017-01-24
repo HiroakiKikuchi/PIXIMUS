@@ -17,7 +17,9 @@ PIXIMUS automates:
 
 *PIXIMUS is a makeshift and throwaway code for author's research and mainly for private use and for my co-workers. I don't plan to continue to improve this.*
 
-*The name of PIXIMUS derives from Jpapanese. パラメータを色々変えながらXDSをいっぱい回してくれて嬉しいスクリプト: 略してPIXIMUS．It means "A shellscript to run XDS with changing many parameters to make you happy :-)".*
+*The name of PIXIMUS derives from Jpapanese. パラメータを色々変えながらXDSをいっぱい回してくれて嬉しいスクリプト: 略してPIXIMUS．It means "a shellscript to run XDS with changing many parameters to make you happy :-)".*
+
+
 
 ## Requirement
 
@@ -41,9 +43,19 @@ PIXIMUS automates:
 Copy PIXIMUS.sh, product.py, INPPAR.PIX, XDS_template.PIX to local.
 
 
+
+## Change Plan
+
+- Make some functions optional.
+
+
+
 ## Licence
 
 MIT license.
+
+
+
 
 ## Author
 
