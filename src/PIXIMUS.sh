@@ -1,5 +1,22 @@
 #!/bin/bash
 
+usage_exit() {
+    echo "hogehoge" 1>&2
+    exit 1
+}
+
+while getopts d OPT
+do
+    case $OPT in
+	d)  DO_DETECTOR=1
+	    ;;
+	\?) usage_exit
+	    ;;
+    esac
+done
+
+
+
 # Make direct product by python. 
 python product.py
 
@@ -67,7 +84,12 @@ do
     V=`echo $V | cut -d. -f1`
 
     # Replace detector parameters in XPARM.XDS.
-    sed '9c\    1203.718994    1181.130371     100.162270' XPARM.XDS
+    if [ $DO_DETECTOR == 1 ]; then
+	detector=`sed -n 1p DETECTPAR.PIX`
+	detector_list=(`echo $detector | tr -s ',' ' '`)
+	sed -i "9c\    ${detector_list[0]}    ${detector_list[1]}    ${detector_list[2]}" XPARM.XDS
+	echo 'hogehogehogehogehoge'
+    fi
 
     # Filtering by lattice volume.
     if [ $V -gt 50000 -a $V -lt 130000 ]; then
