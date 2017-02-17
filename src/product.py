@@ -4,7 +4,7 @@ from functools import reduce
 import texttable
 import numpy as np
 
-csv_obj = csv.reader(open("INPPAR.PIX", "r"))
+csv_obj = csv.reader(open("../inputs/INPPAR.PIX", "r"))
 data = [ v for v in csv_obj]
 
 parameter_names = []

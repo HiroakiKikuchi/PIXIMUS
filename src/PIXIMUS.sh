@@ -33,12 +33,12 @@ name_ind=`expr ${#name_list[@]} - 1`
 
 for n in `seq 2 $line_num`
 do
-  cp XDSINP_template.PIX XDS.INP
+  cp ../inputs/XDSINP_template.PIX XDS.INP
 
   par_str=`sed -n "$n"p par_product.pix`
   # Distinguish spaces for separation and spaces which XDS.INP needs.
   # ex. DATA RANGE=1 180
-  # TODO: not cool.
+  # TODO: not cool?
   a=(`echo $par_str | tr ' ' '%'`)
   par_list=(`echo ${a[@]} | tr ',' ' '`)
 
@@ -51,8 +51,7 @@ do
 
     # When set a parameter.
     else
-      sed -i "/${name_list[$m]}/c ${name_list[$m]}=${par_list[$m]}" \
-        XDS.INP
+      sed -i "/${name_list[$m]}/c ${name_list[$m]}=${par_list[$m]}" XDS.INP
        # Delete % and extra spaces.
       sed -i 's/%/ /g' XDS.INP
       sed -i 's/= /=/g' XDS.INP
@@ -85,10 +84,9 @@ do
 
     # Replace detector parameters in XPARM.XDS.
     if [ $DO_DETECTOR == 1 ]; then
-	detector=`sed -n 1p DETECTPAR.PIX`
+	detector=`sed -n 1p ../inputs/DETECTPAR.PIX`
 	detector_list=(`echo $detector | tr -s ',' ' '`)
 	sed -i "9c\    ${detector_list[0]}    ${detector_list[1]}    ${detector_list[2]}" XPARM.XDS
-	echo 'hogehogehogehogehoge'
     fi
 
     # Filtering by lattice volume.
@@ -126,5 +124,7 @@ do
     | grep -v / | xargs mv -t ./PIXOUT_$N
 
 done
+
+
 
 
