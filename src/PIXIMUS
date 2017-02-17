@@ -1,38 +1,35 @@
 #!/bin/bash
 
 usage_exit() {
-    echo "Usage: $0 [-d] [-v \"min_volume max_volume\"] " 1>&2
-    exit 1
+  echo "Usage: $0 [-d] [-v \"min_volume max_volume\"] " 1>&2
+  exit 1
 }
 
 usage_help() {
-    echo "Usage: $0 [-d] [-v \"min_volume max_volume\"] "
-    echo "Options and arguments:"
-    echo "  -h   : print this help"
-    echo "  -d   : replace detector parameters in XPARM.XDS; need inputs/DETECTPAR.PIX"
-    echo "         enter ORGX, ORGY and F by CSV format in this file"
-    echo "         see also http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_files.html#XPARM.XDS"
-    echo "  -v   : filter by lattice volume"
-    echo "         argument: \"min_volume max_volume\" (need double quotation)"
-    exit 1
+  echo "Usage: $0 [-d] [-v \"min_volume max_volume\"] "
+  echo "Options and arguments:"
+  echo "  -h   : print this help"
+  echo "  -d   : replace detector parameters in XPARM.XDS; need inputs/DETECTPAR.PIX"
+  echo "         enter ORGX, ORGY and F by CSV format in this file"
+  echo "         see also http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_files.html#XPARM.XDS"
+  echo "  -v   : filter by lattice volume"
+  echo "         argument: \"min_volume max_volume\" (need double quotation)"
+  exit 1
 }
-
 
 while getopts dv:h OPT
 do
-    case $OPT in
-	d)  DO_DETECTOR=1
-	    ;;
-	v)  DO_VOLUME=1; VOLUMES=$OPTARG
-	    ;;
-	h)  usage_help
-	    ;;
-	\?) usage_exit
-	    ;;
-    esac
+  case $OPT in
+    d)  DO_DETECTOR=1
+	;;
+    v)  DO_VOLUME=1; VOLUMES=$OPTARG
+        ;;
+    h)  usage_help
+        ;;
+    \?) usage_exit
+        ;;
+  esac
 done
-
-
 
 # Make direct product by python. 
 python product.py
@@ -101,16 +98,32 @@ do
 
     # Replace detector parameters in XPARM.XDS.
     if [ $DO_DETECTOR == 1 ]; then
-	detector=`sed -n 1p ../inputs/DETECTPAR.PIX`
-	detector_list=(`echo $detector | tr -s ',' ' '`)
-	sed -i "9c\    ${detector_list[0]}    ${detector_list[1]}    ${detector_list[2]}" XPARM.XDS
+      detector=`sed -n 1p ../inputs/DETECTPAR.PIX`
+      detector_list=(`echo $detector | tr -s ',' ' '`)
+      sed -i "9c\    ${detector_list[0]}    ${detector_list[1]}    ${detector_list[2]}" XPARM.XDS
     fi
 
     # Filtering by lattice volume.
     if [ $DO_VOLUME == 1 ]; then
 	VOLUME_list=(`echo $VOLUMES | tr -s ' '`)
+      if [ $V -gt ${VOLUME_list[0]} -a $V -lt ${VOLUME_list[1]} ]; then
+        echo "*PIXOUT_$N" >> LATLIST.PIX
+        sed -n 4p XPARM.XDS >> LATLIST.PIX
+        echo -e "\n" >> LATLIST.PIX
+
+        # DEFPIX, INTEGRATE, CORRECT
+        if [ ! -e DEFPIX.LP ]; then
+          sed -i "/JOB=/c JOB=DEFPIX INTEGRATE CORRECT" XDS.INP
+          xds_par | tee dic_$N.log
+          # error list
+          echo "*PIXOUT_$N" >> ERRLIST_DIC.PIX
+          grep -e "!!!" dic_$N.log >> ERRLIST_DIC.PIX
+          echo -e "\n" >> ERRLIST_DIC.PIX
+        fi
+      fi
     fi
-    if [ $V -gt ${VOLUME_list[0]} -a $V -lt ${VOLUME_list[1]} ]; then
+    # No filter
+    if [ $DO_VOLUME != 1 ]; then
       echo "*PIXOUT_$N" >> LATLIST.PIX
       sed -n 4p XPARM.XDS >> LATLIST.PIX
       echo -e "\n" >> LATLIST.PIX
@@ -134,8 +147,15 @@ do
     echo -e "\n" >> LATLIST_COR.PIX
   fi
 
+  # statistics list from CORRECT.LP
+  if [ -e CORRECT.LP ]; then
+    echo "*PIXOUT_$N" >> RLIST.PIX
+    tac CORRECT.LP | grep -m 1 'SUBSET OF INTENSITY DATA' -B 14 | tac >> RLIST.PIX
+    echo -e "\n" >> RLIST.PIX
+  fi
+
   # Move outputs from XDS.
-  \ls | grep -vEe 'PIXIMUS.sh' \
+  \ls | grep -vEe 'PIXIMUS' \
              -vEe 'img$' \
              -vEe 'pix$' \
              -vEe 'PIX$' \
