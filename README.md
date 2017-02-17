@@ -44,11 +44,6 @@ git clone.
 
 
 
-## Change Plan
-
-- Make some functions optional.
-
-
 
 ## Licence
 
