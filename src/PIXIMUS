@@ -162,9 +162,9 @@ do
              -vEe 'product.py'\
              -vEe 'PIXOUT*' \
     | grep -v / | xargs mv -t ./PIXOUT_$N
-
 done
 
-
-
-
+# Move outputs from PIXIMUS
+mkdir OUTLIST
+mv *.PIX ./OUTLIST
+mv *.pix ./OUTLIST
