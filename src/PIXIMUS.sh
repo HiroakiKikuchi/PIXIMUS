@@ -1,14 +1,31 @@
 #!/bin/bash
 
 usage_exit() {
-    echo "hogehoge" 1>&2
+    echo "Usage: $0 [-d] [-v \"min_volume max_volume\"] " 1>&2
     exit 1
 }
 
-while getopts d OPT
+usage_help() {
+    echo "Usage: $0 [-d] [-v \"min_volume max_volume\"] "
+    echo "Options and arguments:"
+    echo "  -h   : print this help"
+    echo "  -d   : replace detector parameters in XPARM.XDS; need inputs/DETECTPAR.PIX"
+    echo "         enter ORGX, ORGY and F by CSV format in this file"
+    echo "         see also http://xds.mpimf-heidelberg.mpg.de/html_doc/xds_files.html#XPARM.XDS"
+    echo "  -v   : filter by lattice volume"
+    echo "         argument: \"min_volume max_volume\" (need double quotation)"
+    exit 1
+}
+
+
+while getopts dv:h OPT
 do
     case $OPT in
 	d)  DO_DETECTOR=1
+	    ;;
+	v)  DO_VOLUME=1; VOLUMES=$OPTARG
+	    ;;
+	h)  usage_help
 	    ;;
 	\?) usage_exit
 	    ;;
@@ -90,7 +107,10 @@ do
     fi
 
     # Filtering by lattice volume.
-    if [ $V -gt 50000 -a $V -lt 130000 ]; then
+    if [ $DO_VOLUME == 1 ]; then
+	VOLUME_list=(`echo $VOLUMES | tr -s ' '`)
+    fi
+    if [ $V -gt ${VOLUME_list[0]} -a $V -lt ${VOLUME_list[1]} ]; then
       echo "*PIXOUT_$N" >> LATLIST.PIX
       sed -n 4p XPARM.XDS >> LATLIST.PIX
       echo -e "\n" >> LATLIST.PIX
