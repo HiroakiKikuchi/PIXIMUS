@@ -5,7 +5,7 @@ ORGX= 1195.0 ORGY= 1180.0  ! check these values with adxv !
 DETECTOR_DISTANCE= 100.000                    
 OSCILLATION_RANGE= 0.900                    
 X-RAY_WAVELENGTH= 1.00000                      
-NAME_TEMPLATE_OF_DATA_FRAMES=../dataset/Lysozyme_3hz_osc_000???.img
+NAME_TEMPLATE_OF_DATA_FRAMES=/path/to/dataset/image_??????.img
 ! REFERENCE_DATA_SET=xxx/XDS_ASCII.HKL ! e.g. to ensure consistent indexing  
 
 
