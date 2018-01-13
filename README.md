@@ -44,14 +44,6 @@ git clone.
 
 
 
-
 ## Licence
 
 MIT license.
-
-
-
-
-## Author
-
-[hkikuchi](https://github.com/HiroakiKikuchi)
